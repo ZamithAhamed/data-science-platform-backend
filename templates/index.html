@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Donor Charity Model</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        table {
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9em;
+            font-family: sans-serif;
+            min-width: 400px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: center;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        td {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Donor Charity Model Updated</h1>
+    <button id="run-model">Run Model</button>
+    <button id="open-orange">Open Orange</button>
+    <div id="output"></div>
+    <div id="total-donations"></div>
+    <div id="donations-per-step"></div>
+    <div id="grid"></div>
+
+    <script>
+        $(document).ready(function() {
+            $('#run-model').click(function() {
+                $.post('/run_model', { steps: 10 }, function(data) {
+                    const agentData = JSON.parse(data.agent_data);
+                    $('#output').html('<pre>' + JSON.stringify(agentData, null, 2) + '</pre>');
+                    $('#total-donations').html('<h2>Total Donations: ' + data.total_donations + '</h2>');
+                    
+                    let donationsHtml = '<h2>Donations per Step:</h2><ul>';
+                    data.donations_per_step.forEach((donations, index) => {
+                        donationsHtml += `<li>Step ${index + 1}: ${donations}</li>`;
+                    });
+                    donationsHtml += '</ul>';
+                    $('#donations-per-step').html(donationsHtml);
+                    
+                    $('#grid').html(generateGrid(agentData.Wealth));
+                });
+            });
+
+            $('#open-orange').click(function() {
+                $.post('/open_orange', function(data) {
+                    alert(data.message);
+                }).fail(function() {
+                    alert('Error: Failed to open Orange.');
+                });
+            });
+
+            function generateGrid(wealthData) {
+                let gridHtml = '<table><tr><th></th>';
+                for (let x = 0; x < 10; x++) {
+                    gridHtml += `<th>${x}</th>`;
+                }
+                gridHtml += '</tr>';
+
+                for (let y = 0; y < 10; y++) {
+                    gridHtml += `<tr><th>${y}</th>`;
+                    for (let x = 0; x < 10; x++) {
+                        const wealth = wealthData[`(${x}, ${y})`] !== undefined ? wealthData[`(${x}, ${y})`] : 0;
+                        gridHtml += `<td>${wealth}</td>`;
+                    }
+                    gridHtml += '</tr>';
+                }
+                gridHtml += '</table>';
+                return gridHtml;
+            }
+        });
+    </script>
+</body>
+</html>
