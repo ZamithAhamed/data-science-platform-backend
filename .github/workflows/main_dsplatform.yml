@@ -69,17 +69,10 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_5AA2CD37FA8A497D9229EFD7F58C7FB1 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_517E12668ECF4B4C9A6A873526EEE6EC }}
 
-      - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v3
-        id: deploy-to-webapp
-        with:
-          app-name: 'dsplatform'
-          slot-name: 'Production'
-      
-      - name: Configure environment variables
+      - name: Set environment variables
         run: |
-          az webapp config appsettings set --name dtplatform \
-            --resource-group dsplatform_group-a630 \
+          az webapp config appsettings set --name 'dtplatform' \
+            --resource-group 'dsplatform_group-a630' \
             --settings \
               FLASK_ENV=production \
               FLASK_SECRET_KEY=${{ secrets.FLASK_SECRET_KEY }} \
@@ -87,4 +80,12 @@ jobs:
               MYSQL_USER=${{ secrets.MYSQL_USER }} \
               MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }} \
               MYSQL_DB=${{ secrets.MYSQL_DB }}
+
+      - name: 'Deploy to Azure Web App'
+        uses: azure/webapps-deploy@v3
+        id: deploy-to-webapp
+        with:
+          app-name: 'dsplatform'
+          slot-name: 'Production'
+      
           
