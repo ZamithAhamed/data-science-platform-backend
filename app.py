@@ -7,14 +7,16 @@ import os
 from flask_mysqldb import MySQL
 import csv
 import traceback 
+from dotenv import load_dotenv
 from flask import session
 from flask import request
 from flask_session import Session
 
-
+# Load environment variables from the .env file
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = 'a9f4f7bbf876d4a5b2cc9b0b4e871d0'  # Replace with a strong secret key
+app.secret_key = os.getenv('FLASK_SECRET_KEY')  # Replace with a strong secret key
 
 
 CORS(app, supports_credentials=True)
@@ -23,10 +25,10 @@ CORS(app, supports_credentials=True)
 app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024  # 100MB
 
 # MySQL connection configuration
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'  # MySQL username
-app.config['MYSQL_PASSWORD'] = 'Thakshi@2000'  # MySQL password
-app.config['MYSQL_DB'] = 'donor_data_db'
+app.config['MYSQL_HOST'] = os.getenv('MYSQL_HOST')
+app.config['MYSQL_USER'] = os.getenv('MYSQL_USER')  # MySQL username
+app.config['MYSQL_PASSWORD'] = os.getenv('MYSQL_PASSWORD')  # MySQL password
+app.config['MYSQL_DB'] = os.getenv('MYSQL_DB')
 
 mysql = MySQL(app)
 

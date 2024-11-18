@@ -11,3 +11,4 @@ docs/_build/
 newenv*/
 flask_session*/
 models*/
+.env
