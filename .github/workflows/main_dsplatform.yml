@@ -75,4 +75,16 @@ jobs:
         with:
           app-name: 'dsplatform'
           slot-name: 'Production'
+      
+      - name: Configure environment variables
+        run: |
+          az webapp config appsettings set --name dtplatform \
+            --resource-group dsplatform_group-a630 \
+            --settings \
+              FLASK_ENV=production \
+              FLASK_SECRET_KEY=${{ secrets.FLASK_SECRET_KEY }} \
+              MYSQL_HOST=${{ secrets.MYSQL_HOST }} \
+              MYSQL_USER=${{ secrets.MYSQL_USER }} \
+              MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }} \
+              MYSQL_DB=${{ secrets.MYSQL_DB }}
           
